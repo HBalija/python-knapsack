@@ -1,6 +1,12 @@
 #!/usr/bin/python3
 
+from functools import lru_cache
 import sys
+
+"""
+TO DO:
+- add docstrings
+"""
 
 
 class WebinarKnapsack:
@@ -14,6 +20,7 @@ class WebinarKnapsack:
         self.tpw = time_per_webinar
         self.cpw = credits_per_webinar
 
+    @lru_cache(maxsize=None)
     def rec_knap(self, iterator, time):
         if iterator == 0:
             return 0
@@ -54,6 +61,7 @@ if __name__ == '__main__':
                           time_per_webinar, credits_per_webinar)
     maximum_time, values = obj.get_values()
     WebinarKnapsack.print_values(maximum_time, values)
+    print(WebinarKnapsack.rec_knap.cache_info())
 
 """
 result:
