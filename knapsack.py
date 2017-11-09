@@ -21,7 +21,8 @@ class WebinarKnapsack:
             return self.rec_knap(iterator - 1, time)
         return max(
             self.rec_knap(iterator - 1, time),
-            self.rec_knap(iterator - 1, time - self.tpw[iterator - 1]) + self.cpw[iterator - 1])
+            (self.rec_knap(iterator - 1, time - self.tpw[iterator - 1]) +
+                self.cpw[iterator - 1]))
 
     def get_values(self):
         j = self.ta
@@ -49,7 +50,8 @@ if __name__ == '__main__':
     time_per_webinar = [2, 3, 4, 5]
     credits_per_webinar = [3, 4, 5, 5]
 
-    obj = WebinarKnapsack(time_available, available_webinars_number, time_per_webinar, credits_per_webinar)
+    obj = WebinarKnapsack(time_available, available_webinars_number,
+                          time_per_webinar, credits_per_webinar)
     maximum_time, values = obj.get_values()
     WebinarKnapsack.print_values(maximum_time, values)
 

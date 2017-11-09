@@ -21,7 +21,8 @@ class KnapsackTest(unittest.TestCase):
         self.assertEqual(res, 0)
 
     def test_rec_knap_returns_proper_value(self):
-        res = self.obj.rec_knap(self.available_webinars_number, self.time_available)
+        res = self.obj.rec_knap(
+            self.available_webinars_number, self.time_available)
         self.assertEqual(res, 9)
 
     def test_get_values_returns_proper_items(self):
