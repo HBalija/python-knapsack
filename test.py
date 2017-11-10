@@ -10,11 +10,11 @@ class KnapsackTest(unittest.TestCase):
     def setUp(self):
         self.time_available = 7
         self.available_webinars_number = 4
-        self.time_per_webinar = [2, 3, 4, 5]
-        self.credits_per_webinar = [3, 4, 5, 5]
+        time_per_webinar = [2, 3, 4, 5]
+        credits_per_webinar = [3, 4, 5, 5]
         self.obj = WebinarKnapsack(
             self.time_available, self.available_webinars_number,
-            self.time_per_webinar, self.credits_per_webinar)
+            time_per_webinar, credits_per_webinar)
 
     def test_rec_knap_returns_zero_if_iterator_equals_zero(self):
         res = self.obj.rec_knap(0, self.time_available)
