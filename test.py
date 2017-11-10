@@ -39,7 +39,9 @@ class KnapsackTest(unittest.TestCase):
         self.input_data.pop(0)
         with self.assertRaises(ValueError) as e:
             WebinarKnapsack.process_input_data(self.input_data)
-        self.assertTrue(WebinarKnapsack._DATA_LENGTH_ERROR in str(e.exception))
+        self.assertTrue(
+            WebinarKnapsack._DATA_LENGTH_ERROR.format(len(self.input_data))
+            in str(e.exception))
 
     def test_input_raises_value_error_if_wrong_input(self):
         self.input_data[3] = '3 4 5'

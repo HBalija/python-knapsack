@@ -7,7 +7,7 @@ import sys
 
 class WebinarKnapsack:
 
-    _DATA_LENGTH_ERROR = 'Four lines required.'
+    _DATA_LENGTH_ERROR = 'Four lines required. File is {} lines long.'
     _DATA_INPUT_ERROR = 'Invalid input.'
 
     def __init__(
@@ -18,32 +18,6 @@ class WebinarKnapsack:
         self.wn = available_webinars_number
         self.tpw = time_per_webinar
         self.cpw = credits_per_webinar
-
-    @classmethod
-    def process_input_data(cls, input_data):
-        """
-        Validates and processes input data. Returns list of items ready for
-        object initailzation.
-        """
-        data = [line.replace(' ', '').strip() for line in input_data]
-
-        if len(data) != 4:
-            raise ValueError(cls._DATA_LENGTH_ERROR)
-        if len(data[0]) != 1 or len(data[1]) != 1 or len(data[2]) != len(data[3]):
-            raise ValueError(cls._DATA_INPUT_ERROR)
-
-        try:
-            data_list = []
-            for element in data:
-                if len(element) == 1:
-                    data_list.append(int(element))
-                else:
-                    data_list.append([int(char) for char in element])
-            if data_list[1] != len(data_list[2]):
-                raise ValueError(cls._DATA_INPUT_ERROR)
-            return data_list
-        except Exception as ex:
-            raise ValueError(str(ex))
 
     @lru_cache(maxsize=None)
     def rec_knap(self, iterator, time):
@@ -78,6 +52,32 @@ class WebinarKnapsack:
         values_used = values_used[::-1]
 
         return self.rec_knap(self.wn, self.ta), values_used
+
+    @classmethod
+    def process_input_data(cls, input_data):
+        """
+        Validates and processes input data. Returns list of items ready for
+        object initailzation.
+        """
+        data = [line.replace(' ', '').strip() for line in input_data]
+
+        if len(data) != 4:
+            raise ValueError(cls._DATA_LENGTH_ERROR.format(len(data)))
+        if len(data[0]) != 1 or len(data[1]) != 1 or len(data[2]) != len(data[3]):
+            raise ValueError(cls._DATA_INPUT_ERROR)
+
+        try:
+            data_list = []
+            for element in data:
+                if len(element) == 1:
+                    data_list.append(int(element))
+                else:
+                    data_list.append([int(char) for char in element])
+            if data_list[1] != len(data_list[2]):
+                raise ValueError(cls._DATA_INPUT_ERROR)
+            return data_list
+        except Exception as ex:
+            raise ValueError(str(ex))
 
     @staticmethod
     def print_values(max_points, values):
