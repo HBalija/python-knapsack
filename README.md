@@ -17,7 +17,7 @@ Navigate to project directory:
 
 Run example:
 
-    ./knapsack.py
+    ./knapsack.py < input.txt
 
 Run tests:
 

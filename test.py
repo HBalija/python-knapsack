@@ -12,6 +12,7 @@ class KnapsackTest(unittest.TestCase):
         self.available_webinars_number = 4
         time_per_webinar = [2, 3, 4, 5]
         credits_per_webinar = [3, 4, 5, 5]
+        self.input_data = ['7', '4', '2 3 4 5', '3 4 5 5']
         self.obj = WebinarKnapsack(
             self.time_available, self.available_webinars_number,
             time_per_webinar, credits_per_webinar)
@@ -29,6 +30,28 @@ class KnapsackTest(unittest.TestCase):
         res = self.obj.get_values()
         self.assertEqual(len(res), 2)
         self.assertEqual(res[1], [(3, 4), (4, 5)])
+
+    def test_input_processes_and_returns_list_succeeds(self):
+        res = WebinarKnapsack.process_input_data(self.input_data)
+        self.assertEqual(res, [7, 4, [2, 3, 4, 5], [3, 4, 5, 5]])
+
+    def test_input_raises_value_error_if_wrong_len_of_data(self):
+        self.input_data.pop(0)
+        with self.assertRaises(ValueError) as e:
+            WebinarKnapsack.process_input_data(self.input_data)
+        self.assertTrue(WebinarKnapsack._DATA_LENGTH_ERROR in str(e.exception))
+
+    def test_input_raises_value_error_if_wrong_input(self):
+        self.input_data[3] = '3 4 5'
+        with self.assertRaises(ValueError) as e:
+            WebinarKnapsack.process_input_data(self.input_data)
+        self.assertTrue(WebinarKnapsack._DATA_INPUT_ERROR in str(e.exception))
+
+    def test_input_raises_value_error_if_wrong_input_type(self):
+        self.input_data[3] = '3 4 5 A'
+        with self.assertRaises(ValueError) as e:
+            WebinarKnapsack.process_input_data(self.input_data)
+        self.assertTrue('invalid literal' in str(e.exception))
 
 
 if __name__ == '__main__':
