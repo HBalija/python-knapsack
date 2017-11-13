@@ -5,53 +5,54 @@ import fileinput
 import sys
 
 
-class WebinarKnapsack:
+class Knapsack:
 
-    _DATA_LENGTH_ERROR = 'Four lines required. File is {} lines long.'
+    _DATA_LENGTH_ERROR = 'Three lines required. File is {} lines long.'
     _DATA_INPUT_ERROR = 'Invalid input.'
 
-    def __init__(
-        self, time_available, available_webinars_number,
-            time_per_webinar, credits_per_webinar):
+    def __init__(self, weight_available, weight_per_item, value_per_item):
 
-        self.ta = time_available
-        self.wn = available_webinars_number
-        self.tpw = time_per_webinar
-        self.cpw = credits_per_webinar
+        self.wa = weight_available
+        self.wpi = weight_per_item
+        self.vpi = value_per_item
+
+    @property
+    def number_of_items(self):
+        return len(self.wpi)
 
     @lru_cache(maxsize=None)
-    def rec_knap(self, iterator, time):
+    def rec_knap(self, iterator, available_weight):
         """
-        Performs recursive calculation of max number of points per time given
-        and number of courses available.
+        Performs recursive calculation of max value per weight given
+        and number of items available.
         """
         if iterator == 0:
             return 0
-        if self.tpw[iterator-1] > time:
+        if self.wpi[iterator-1] > available_weight:
             # recursion
-            return self.rec_knap(iterator-1, time)
+            return self.rec_knap(iterator-1, available_weight)
         # recursion (included values)
         return max(
-            self.rec_knap(iterator-1, time),
-            (self.rec_knap(iterator-1, time - self.tpw[iterator-1]) +
-                self.cpw[iterator-1]))
+            self.rec_knap(iterator-1, available_weight),
+            (self.rec_knap(iterator-1, available_weight - self.wpi[iterator-1])
+                + self.vpi[iterator-1]))
 
     def get_values(self):
         """
-        Returns calculation of maximum points and related courses.
+        Returns calculation of maximum value and related items.
         """
-        j = self.ta
+        j = self.wa
         values_used = []
-        for i in range(self.wn, 0, -1):
+        for i in range(self.number_of_items, 0, -1):
             if self.rec_knap(i, j) != self.rec_knap(i-1, j):
-                # appending courses used to values_used list
-                values_used.append((self.tpw[i-1], self.cpw[i-1]))
-                j -= self.tpw[i-1]
+                # appending items used to values_used list
+                values_used.append((self.wpi[i-1], self.vpi[i-1]))
+                j -= self.wpi[i-1]
 
-        # reversing list to display courses in order given
+        # reversing list to display items in order given
         values_used = values_used[::-1]
 
-        return self.rec_knap(self.wn, self.ta), values_used
+        return self.rec_knap(self.number_of_items, self.wa), values_used
 
     @classmethod
     def process_input_data(cls, input_data):
@@ -61,20 +62,21 @@ class WebinarKnapsack:
         """
         data = [line.replace(' ', '').strip() for line in input_data]
 
-        if len(data) != 4:
+        if len(data) != 3:
+            # file must be 3 lines long
             raise ValueError(cls._DATA_LENGTH_ERROR.format(len(data)))
-        if len(data[0]) != 1 or len(data[1]) != 1 or len(data[2]) != len(data[3]):
+
+        if len(data[0]) != 1 or len(data[1]) != len(data[2]):
             raise ValueError(cls._DATA_INPUT_ERROR)
 
         try:
             data_list = []
+            # casting values to integers and appending them to data_list
             for element in data:
                 if len(element) == 1:
                     data_list.append(int(element))
                 else:
                     data_list.append([int(char) for char in element])
-            if data_list[1] != len(data_list[2]):
-                raise ValueError(cls._DATA_INPUT_ERROR)
             return data_list
         except Exception as ex:
             raise ValueError(str(ex))
@@ -82,7 +84,7 @@ class WebinarKnapsack:
     @staticmethod
     def print_values(max_points, values):
         """
-        Prints max value of points for time available and courses included.
+        Prints max value for weight available and items included.
         """
         sys.stdout.write(str(max_points) + '\n')
         for value in values:
@@ -92,28 +94,27 @@ class WebinarKnapsack:
 if __name__ == '__main__':
 
     with fileinput.input() as data_input:
-        data = WebinarKnapsack.process_input_data(data_input)
+        data = Knapsack.process_input_data(data_input)
 
     # initializing object with given data
-    obj = WebinarKnapsack(*data)
+    obj = Knapsack(*data)
 
     # calculating and storing object values
-    maximum_time, values = obj.get_values()
+    max_value, items = obj.get_values()
 
     # printing values
-    WebinarKnapsack.print_values(maximum_time, values)
+    Knapsack.print_values(max_value, items)
 
-    # print(WebinarKnapsack.rec_knap.cache_info())
+    # print(Knapsack.rec_knap.cache_info())
 
 """
 input file:
-7
-4
-2 3 4 5
-3 4 5 5
+7               - maximum weight
+2 3 4 5         - weight of items
+3 4 5 5         - items value
 
 result:
-9
-3 4
-4 5
+9               - max value produced
+3 4             - used items listed
+4 5               with weight - value pairs
 """
