@@ -60,7 +60,7 @@ class Knapsack:
         data = [line.strip() for line in input_data]
 
         if len(data) != 4:
-            # file must be 3 lines long
+            # file must be 4 lines long
             raise ValueError(cls._DATA_LENGTH_ERROR.format(len(data)))
 
         try:
